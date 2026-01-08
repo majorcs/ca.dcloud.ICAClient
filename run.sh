@@ -14,10 +14,21 @@ if [[ -d $HOME/.ICAClient/.tmp ]]; then
     rm -r $HOME/.ICAClient/.tmp
 fi
 
+# check requirements
+# /app/ICAClient/linuxx64/util/workspacecheck.sh
+#ls -la /app/lib/
+#ldd /app/ICAClient/linuxx64/selfservice
+
 #Start the Citrix logging service
-/app/ICAClient/linuxx64/util/ctxlogd
-#Start the Workspace self-service dashboard
-/app/ICAClient/linuxx64/selfservice
+/app/ICAClient/linuxx64/util/ctxcwalogd
+
+#Start the provided icafile or fallback to workspace self-service dashboard
+if [ $# -ne 0 ]; then
+    echo "icafile in first param $1"
+    /app/ICAClient/linuxx64/wfica.sh "$1"
+else
+    /app/ICAClient/linuxx64/selfservice
+fi
 
 #This services seems to (sometimes) get started when launching Workspace. It's stubborn and requires SIGKILL to stop.
 if [[ ! -z $(ps -e | grep UtilDaemon) ]]; then
@@ -25,7 +36,7 @@ if [[ ! -z $(ps -e | grep UtilDaemon) ]]; then
 fi
 
 #Kill the rest of the services that were started, so the Flatpak container itself stops running once you close Workspace.
-for process in AuthManagerDaem ServiceRecord ctxlogd icasessionmgr; do
+for process in AuthManagerDaem ServiceRecord ctxcwalogd icasessionmgr; do
     pkill $process
 done
 

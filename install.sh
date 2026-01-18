@@ -21,7 +21,7 @@ mkdir rtme
 cp /tmp/icaclient/x86_64/usr/local/bin/HDXRTME.so .
 chmod +x HDXRTME.so
 cp /tmp/icaclient/x86_64/usr/local/bin/* rtme
-MODULE_INI=config/module.iniflatpak
+MODULE_INI=config/module.ini
 if [ -L "$MODULE_INI" ] ; then
     MODULE_INI=$(readlink -f "$MODULE_INI")
 fi
